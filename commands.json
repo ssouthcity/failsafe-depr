@@ -1,0 +1,17 @@
+[
+	{
+		"type": 1,
+		"name": "class",
+		"description": "select your main class and get the corresponding role"
+	},
+	{
+		"type": 1,
+		"name": "activities",
+		"description": "select the activities you would like to participate in"
+	},
+	{
+		"type": 1,
+		"name": "events",
+		"description": "events"
+	}
+]
