@@ -2,14 +2,8 @@
 
 sudo snap install --classic go
 sudo snap install doctl
+sudo snap install jq
 
-# echo
-# [Unit]
-# Description=Failsafe Discord bot
-# 
-# [Service]
-# ExecStart=/root/go/bin/failsafe
-# Restart=on-failure
-# 
-# [Install]
-# WantedBy=multi-user.target
+mkdir /etc/failsafe
+echo '${config_file_content}' > /etc/failsafe/config.json
+echo '${service_file_content}' > /etc/systemd/system/failsafe.service

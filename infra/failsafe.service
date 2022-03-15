@@ -1,0 +1,12 @@
+[Unit]
+Description=Failsafe Discord bot
+After=cloud-final.service
+
+[Service]
+User=root
+ExecStartPre=/snap/bin/go install github.com/ssouthcity/failsafe/cmd/failsafe@latest
+ExecStart=/root/go/bin/failsafe -config /etc/failsafe/config.json
+Restart=on-failure
+
+[Install]
+WantedBy=cloud-init.target
