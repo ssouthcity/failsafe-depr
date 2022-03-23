@@ -13,7 +13,6 @@
 
 # Configuration files
 config.*.json
-infra/config.json
 
 # Terraform local installs
 infra/.terraform

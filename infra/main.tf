@@ -19,6 +19,10 @@ variable "do_token" {
   type = string
 }
 
+variable "failsafe_config_json" {
+  type = string
+}
+
 provider "digitalocean" {
   token = var.do_token
 }
@@ -34,8 +38,8 @@ resource "digitalocean_droplet" "failsafe" {
   size     = "s-1vcpu-1gb"
   ssh_keys = [data.digitalocean_ssh_key.neptr.id]
   user_data = templatefile("${path.module}/user-data.sh", {
-    config_file_content  = file("${path.module}/config.json")
-    service_file_content = file("${path.module}/failsafe.service")
+    failsafe_config_json     = var.failsafe_config_json
+    failsafe_service_content = file("${path.module}/failsafe.service")
   })
 }
 
