@@ -9,7 +9,7 @@ import (
 func classCommand(config *Config) dgmux.Handler {
 	return func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		rw := dgmux.NewResponseWriter()
-		rw.Content("Pick your main class")
+		rw.Content("Pick your main class test")
 		rw.Ephemral()
 		rw.Components(discordgo.SelectMenu{
 			CustomID:  "class_select",

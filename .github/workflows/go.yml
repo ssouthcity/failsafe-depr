@@ -72,8 +72,5 @@ jobs:
         with:
           token: ${{ secrets.DO_TOKEN }}
 
-      - name: Test
-        run: echo "hello $(echo 'world')"
-
       - name: Restart droplet
         run: doctl compute droplet-action reboot "$(terraform output -raw droplet_id)"
