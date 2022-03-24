@@ -42,3 +42,7 @@ resource "digitalocean_droplet" "failsafe" {
     failsafe_service_content = file("${path.module}/failsafe.service")
   })
 }
+
+output "droplet_id" {
+  value = digitalocean_droplet.failsafe.id
+}

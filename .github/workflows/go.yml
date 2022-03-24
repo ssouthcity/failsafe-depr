@@ -61,8 +61,13 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
-      - name: Terraform Destroy
-        run: terraform destroy -auto-approve
-
       - name: Terraform Apply
         run: terraform apply -auto-approve
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DO_TOKEN }}
+
+      - name: Restart droplet
+        run: doctl compute droplet-action reboot $(terraform output -raw droplet_id)
