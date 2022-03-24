@@ -32,7 +32,7 @@ data "digitalocean_ssh_key" "neptr" {
 }
 
 resource "digitalocean_droplet" "failsafe" {
-  image    = "ubuntu-20-04-x64"
+  image    = "docker-20-04"
   name     = "failsafe-1"
   region   = "fra1"
   size     = "s-1vcpu-1gb"
@@ -41,8 +41,4 @@ resource "digitalocean_droplet" "failsafe" {
     failsafe_config_json     = var.failsafe_config_json
     failsafe_service_content = file("${path.module}/failsafe.service")
   })
-}
-
-output "droplet_id" {
-  value = digitalocean_droplet.failsafe.id
 }
