@@ -72,4 +72,4 @@ jobs:
           token: ${{ secrets.DO_TOKEN }}
 
       - name: Restart droplet
-        run: doctl compute droplet-action reboot $(terraform output --raw droplet_id)
+        run: doctl compute droplet-action reboot "$(terraform output -raw droplet_id)"
