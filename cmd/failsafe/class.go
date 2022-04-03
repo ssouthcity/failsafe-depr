@@ -9,7 +9,7 @@ import (
 func classCommand(config *Config) dgmux.Handler {
 	return func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		rw := dgmux.NewResponseWriter()
-		rw.Content("Pick your main class test")
+		rw.Content("Pick your main class")
 		rw.Ephemral()
 		rw.Components(discordgo.SelectMenu{
 			CustomID:  "class_select",
@@ -49,7 +49,8 @@ func classSelect(config *Config) dgmux.Handler {
 		pick := i.MessageComponentData().Values[0]
 
 		rw := dgmux.NewResponseWriter()
-		rw.Type(discordgo.InteractionResponseDeferredMessageUpdate)
+		rw.Type(discordgo.InteractionResponseUpdateMessage)
+		rw.Content("[joyful] Welcome aboard guardian [pained] There's plenty of canned food in the kitchen unit")
 		rw.Ephemral()
 		rw.ClearRows()
 

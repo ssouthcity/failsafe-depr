@@ -66,13 +66,16 @@ func ready() interface{} {
 }
 
 func interactionCreate(conf *Config) interface{} {
+	r := dgmux.New()
+
+	r.Command("class", classCommand(conf))
+	r.Component("class_select", classSelect(conf))
+
+	r.Command("activities", activityCommand(conf))
+	r.Component("activities_select", activitySelect(conf))
+
 	return func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		log.Info().Str("interaction", i.Type.String()).Str("user", i.Member.User.Username).Msg("received interaction")
-
-		r := dgmux.New()
-
-		r.Command("class", classCommand(conf))
-		r.Component("class_select", classSelect(conf))
 
 		r.HandleInteraction(s, i)
 	}
