@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: failsafe
+  namespace: failsafe
+  labels:
+    app: failsafe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: failsafe
+  template:
+    metadata:
+      labels:
+        app: failsafe
+    spec:
+      containers:
+      - name: failsafe
+        image: ssouthcity/failsafe:latest
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: config
+          mountPath: "/etc/failsafe"
+          readOnly: true
+        args:
+        - "-config=/etc/failsafe/config.json"
+      volumes:
+      - name: config
+        secret:
+          secretName: failsafe-secrets
+          items:
+          - key: config
+            path: config.json

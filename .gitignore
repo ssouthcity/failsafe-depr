@@ -16,3 +16,6 @@ config.*.json
 
 # Terraform local installs
 infra/.terraform
+
+# Kubernetes Secrets
+k8s/secrets.yaml

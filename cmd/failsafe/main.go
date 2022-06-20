@@ -22,20 +22,16 @@ var (
 	confPath = flag.String("config", "config.json", "path to config file")
 )
 
-func init() {
-	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
-}
-
-func init() {
-	flag.Parse()
-}
-
 func main() {
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+
+	flag.Parse()
+
 	conf := &Config{}
 
 	confFile, err := os.Open(*confPath)
 	if err != nil {
-		log.Fatal().Err(err).Str("path", *confPath).Msg("config file does not exist")
+		log.Fatal().Err(err).Str("path", "").Msg("config file does not exist")
 	}
 	defer confFile.Close()
 
