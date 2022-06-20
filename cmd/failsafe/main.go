@@ -8,7 +8,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"github.com/ssouthcity/failsafe/pkg/dgmux"
+	"github.com/ssouthcity/dgimux"
 )
 
 type Config struct {
@@ -48,8 +48,15 @@ func main() {
 		log.Fatal().Err(err).Msg("session was incorrectly configured")
 	}
 
-	sess.AddHandler(ready())
-	sess.AddHandler(interactionCreate(conf))
+	r := dgimux.NewRouter()
+
+	r.ApplicationCommand("class", classCommand(conf))
+	r.MessageComponent("class_select", classSelect(conf))
+
+	r.ApplicationCommand("activities", activityCommand(conf))
+	r.MessageComponent("activities_select", activitySelect(conf))
+
+	sess.AddHandler(r.HandleInteraction)
 
 	if err := sess.Open(); err != nil {
 		log.Fatal().Err(err).Msg("websocket connection could not be established")
@@ -57,26 +64,4 @@ func main() {
 	defer sess.Close()
 
 	select {}
-}
-
-func ready() interface{} {
-	return func(s *discordgo.Session, r *discordgo.Ready) {
-		log.Info().Str("name", r.User.Username).Msg("connected and listening for events")
-	}
-}
-
-func interactionCreate(conf *Config) interface{} {
-	r := dgmux.New()
-
-	r.Command("class", classCommand(conf))
-	r.Component("class_select", classSelect(conf))
-
-	r.Command("activities", activityCommand(conf))
-	r.Component("activities_select", activitySelect(conf))
-
-	return func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-		log.Info().Str("interaction", i.Type.String()).Str("user", i.Member.User.Username).Msg("received interaction")
-
-		r.HandleInteraction(s, i)
-	}
 }

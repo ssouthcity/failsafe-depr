@@ -5,13 +5,13 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog/log"
-	"github.com/ssouthcity/failsafe/pkg/dgmux"
+	"github.com/ssouthcity/dgimux"
 )
 
-func activityCommand(config *Config) dgmux.Handler {
+func activityCommand(config *Config) dgimux.InteractionHandlerFunc {
 	return func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-		rw := dgmux.NewResponseWriter()
-		rw.Content("[cheerful] Captain, I've readied the notifictation system! [dreary] Is this all you intend to use golden technology for?")
+		rw := dgimux.NewResponseWriter()
+		rw.Text("[cheerful] Captain, I've readied the notifictation system! [dreary] Is this all you intend to use golden technology for?")
 		rw.Ephemral()
 
 		menu := discordgo.SelectMenu{
@@ -29,20 +29,20 @@ func activityCommand(config *Config) dgmux.Handler {
 			})
 		}
 
-		rw.Components(menu)
+		rw.ComponentRow(menu)
 
 		s.InteractionRespond(i.Interaction, rw.Response())
 	}
 }
 
-func activitySelect(config *Config) dgmux.Handler {
+func activitySelect(config *Config) dgimux.InteractionHandlerFunc {
 	return func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		picks := i.MessageComponentData().Values
 
-		rw := dgmux.NewResponseWriter()
+		rw := dgimux.NewResponseWriter()
 		rw.Type(discordgo.InteractionResponseUpdateMessage)
-		rw.Content("[happy] I've set you up for notifications from friends [murky] Since you're lucky enough to have them")
-		rw.ClearRows()
+		rw.Text("[happy] I've set you up for notifications from friends [murky] Since you're lucky enough to have them")
+		rw.ClearComponentRows()
 		rw.Ephemral()
 
 		for name, id := range config.ActivityRoles {
@@ -60,7 +60,7 @@ func activitySelect(config *Config) dgmux.Handler {
 			if err != nil {
 				log.Err(err).Str("user", i.Member.User.Username).Bool("add", wantsRole).Msg("role was not managed")
 				rw.Type(discordgo.InteractionResponseChannelMessageWithSource)
-				rw.Content("[happy] Operation failed, [pessimistic] what am I even good for...")
+				rw.Text("[happy] Operation failed, [pessimistic] what am I even good for...")
 				break
 			}
 		}

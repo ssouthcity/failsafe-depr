@@ -3,15 +3,15 @@ package main
 import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog/log"
-	"github.com/ssouthcity/failsafe/pkg/dgmux"
+	"github.com/ssouthcity/dgimux"
 )
 
-func classCommand(config *Config) dgmux.Handler {
+func classCommand(config *Config) dgimux.InteractionHandlerFunc {
 	return func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-		rw := dgmux.NewResponseWriter()
-		rw.Content("Pick your main class")
+		rw := dgimux.NewResponseWriter()
+		rw.Text("Pick your main class")
 		rw.Ephemral()
-		rw.Components(discordgo.SelectMenu{
+		rw.ComponentRow(discordgo.SelectMenu{
 			CustomID:  "class_select",
 			MinValues: NewIntPtr(1),
 			MaxValues: 1,
@@ -44,15 +44,15 @@ func classCommand(config *Config) dgmux.Handler {
 	}
 }
 
-func classSelect(config *Config) dgmux.Handler {
+func classSelect(config *Config) dgimux.InteractionHandlerFunc {
 	return func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		pick := i.MessageComponentData().Values[0]
 
-		rw := dgmux.NewResponseWriter()
+		rw := dgimux.NewResponseWriter()
 		rw.Type(discordgo.InteractionResponseUpdateMessage)
-		rw.Content("[joyful] Welcome aboard guardian [pained] There's plenty of canned food in the kitchen unit")
+		rw.Text("[joyful] Welcome aboard guardian [pained] There's plenty of canned food in the kitchen unit")
 		rw.Ephemral()
-		rw.ClearRows()
+		rw.ClearComponentRows()
 
 		for name, roleID := range config.ClassRoles {
 			var err error
@@ -66,7 +66,7 @@ func classSelect(config *Config) dgmux.Handler {
 			if err != nil {
 				log.Err(err).Str("user", i.Member.User.Username).Bool("add", name == pick).Msg("role was not managed")
 				rw.Type(discordgo.InteractionResponseChannelMessageWithSource)
-				rw.Content("[upbeat] Oh no! I was unable to identify the guardian. [depressed] Critical failure as per usual...")
+				rw.Text("[upbeat] Oh no! I was unable to identify the guardian. [depressed] Critical failure as per usual...")
 				break
 			}
 		}
