@@ -9,6 +9,6 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o failsafe cmd/failsafe/*
+RUN go install ./...
 
-ENTRYPOINT [ "./failsafe" ]
+ENTRYPOINT [ "failsafe" ]
