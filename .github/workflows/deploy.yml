@@ -54,10 +54,15 @@ jobs:
         token: ${{ secrets.DO_TOKEN }}
 
     - name: Save kubeconfig
-      run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 main-cluster
+      id: kubeconfig
+      run: |
+        doctl kubernetes cluster kubeconfig save --expiry-seconds 600 main-cluster
+        echo "::set-output content=$(cat ~/.kube/config)"
 
     - name: Set Context
       uses: azure/k8s-set-context@v2
+      with:
+        kubeconfig: ${{ steps.kubeconfig.outputs.content }}
 
     - name: Create secrets
       uses: azure/k8s-create-secret@v2
