@@ -54,24 +54,13 @@ jobs:
         token: ${{ secrets.DO_TOKEN }}
 
     - name: Save kubeconfig
-      id: kubeconfig
+      run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 main-cluster
+
+    - name: Apply k8s configuration
       run: |
-        doctl kubernetes cluster kubeconfig save --expiry-seconds 600 main-cluster
-        echo "::set-output name=CONTENT::$(cat $HOME/.kube/config)"
-
-    - name: Set Context
-      uses: azure/k8s-set-context@v2
-      with:
-        method: kubeconfig
-        kubeconfig: ${{ steps.kubeconfig.outputs.CONTENT }}
-
-    - name: Create secrets
-      uses: azure/k8s-create-secret@v2
-      with:
-        namespace: failsafe
-        secret-type: generic
-        secret-name: failsafe-secrets-2
-        data:  ${{ secrets.FAILSAFE_SECRETS }}
-
-    - name: Update deployment
-      run: kubectl --namespace failsafe set image deployment/failsafe failsafe=ssouthcity/failsafe:${{ github.sha }}
+        kubectl apply -f k8s/namespace.yaml
+        envsubst < k8s/secrets.yaml | kubectl apply -f -
+        envsubst < k8s/deployment.yaml | kubectl apply -f -
+      env:
+        FAILSAFE_IMAGE: ssouthcity/failsafe:${{ github.sha }}
+        FAILSAFE_CONFIG: ${{ secrets.FAILSAFE_CONFIG }}

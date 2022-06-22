@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: failsafe
-        image: ssouthcity/failsafe:latest
+        image: $FAILSAFE_IMAGE
         imagePullPolicy: Always
         volumeMounts:
         - name: config
