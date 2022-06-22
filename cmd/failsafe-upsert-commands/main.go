@@ -10,30 +10,17 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type Config struct {
-	Token   string `json:"token"`
-	GuildID string `json:"guild"`
-}
-
-var (
-	confPath = flag.String("config", "config.json", "path to config file")
-	cmdsPath = flag.String("commands", "commands.json", "path to command spec file")
-)
-
-func init() {
-	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
-}
-
-func init() {
-	flag.Parse()
-}
-
 func main() {
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+
+	token := flag.String("token", "", "token used for authentication to discord")
+	flag.Parse()
+
 	cmds := []*discordgo.ApplicationCommand{}
 
-	cmdsFile, err := os.Open(*cmdsPath)
+	cmdsFile, err := os.Open("commands.json")
 	if err != nil {
-		log.Fatal().Err(err).Str("path", *cmdsPath).Msg("command file does not exist")
+		log.Fatal().Err(err).Msg("command file does not exist")
 	}
 	defer cmdsFile.Close()
 
@@ -41,19 +28,7 @@ func main() {
 		log.Fatal().Err(err).Msg("command file contains invalid json")
 	}
 
-	conf := &Config{}
-
-	confFile, err := os.Open(*confPath)
-	if err != nil {
-		log.Fatal().Err(err).Str("path", *confPath).Msg("config file does not exist")
-	}
-	defer confFile.Close()
-
-	if err := json.NewDecoder(confFile).Decode(&conf); err != nil {
-		log.Fatal().Err(err).Msg("config file contains invalid json")
-	}
-
-	s, err := discordgo.New("Bot " + conf.Token)
+	s, err := discordgo.New("Bot " + *token)
 	if err != nil {
 		log.Fatal().Err(err).Msg("session was incorrectly configured")
 	}
@@ -63,7 +38,7 @@ func main() {
 	}
 	defer s.Close()
 
-	if _, err := s.ApplicationCommandBulkOverwrite(s.State.User.ID, conf.GuildID, cmds); err != nil {
+	if _, err := s.ApplicationCommandBulkOverwrite(s.State.User.ID, "", cmds); err != nil {
 		log.Fatal().Err(err).Msg("command creation failed")
 	}
 
