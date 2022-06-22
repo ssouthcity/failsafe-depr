@@ -8,10 +8,5 @@
 		"type": 1,
 		"name": "activities",
 		"description": "select the activities you would like to participate in"
-	},
-	{
-		"type": 1,
-		"name": "events",
-		"description": "events"
 	}
 ]
