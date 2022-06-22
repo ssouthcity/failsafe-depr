@@ -31,7 +31,7 @@ func main() {
 
 	confFile, err := os.Open(*confPath)
 	if err != nil {
-		log.Fatal().Err(err).Str("path", "").Msg("config file does not exist")
+		log.Fatal().Err(err).Str("path", *confPath).Msg("config file does not exist")
 	}
 	defer confFile.Close()
 
