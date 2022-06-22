@@ -55,10 +55,6 @@ jobs:
 
     - name: Save kubeconfig
       run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 main-cluster
-    
-    - uses: azure/k8s-set-context@v2
-      with:
-        method: kubeconfig
 
     - name: Create secrets
       uses: azure/k8s-create-secret@v2
