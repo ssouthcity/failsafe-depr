@@ -11,4 +11,4 @@ COPY . .
 
 RUN go install ./...
 
-CMD [ "/go/bin/failsafe" ]
+ENTRYPOINT [ "/go/bin/failsafe" ]
