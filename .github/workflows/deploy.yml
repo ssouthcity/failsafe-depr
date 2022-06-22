@@ -57,11 +57,12 @@ jobs:
       id: kubeconfig
       run: |
         doctl kubernetes cluster kubeconfig save --expiry-seconds 600 main-cluster
-        echo "::set-output content=$(cat ~/.kube/config)"
+        echo "::set-output content=$(cat $HOME/.kube/config)"
 
     - name: Set Context
       uses: azure/k8s-set-context@v2
       with:
+        method: kubeconfig
         kubeconfig: ${{ steps.kubeconfig.outputs.content }}
 
     - name: Create secrets
